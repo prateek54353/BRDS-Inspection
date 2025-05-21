@@ -15,8 +15,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Login App',
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.system, //  Responds to system setting
-      theme: ThemeData.light(),     //  Light theme
+      themeMode: ThemeMode.system, //  system setting
+      theme: ThemeData.light(),     // Light theme
       darkTheme: ThemeData.dark(),  //  Dark theme
       home: const SplashScreen(),
       getPages: AppPages.routes,
@@ -78,7 +78,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 80),
+            const SizedBox(height: 120),
 
             const SizedBox(height: 200),
             Row(

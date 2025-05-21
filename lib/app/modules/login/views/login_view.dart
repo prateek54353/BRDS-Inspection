@@ -35,7 +35,7 @@ class LoginView extends GetView<LoginController> {
                     controller: controller.passwordController,
                     obscureText: true,
                     decoration: const InputDecoration(
-                      labelText: "Enter Password",
+                      labelText: "Enter-Password",
                       border: OutlineInputBorder(),
                     ),
                   ),
@@ -52,6 +52,7 @@ class LoginView extends GetView<LoginController> {
 
 
                   // add captcha later
+                  const SizedBox(height: 16),
 
                   // Forgot Password
                   Align(

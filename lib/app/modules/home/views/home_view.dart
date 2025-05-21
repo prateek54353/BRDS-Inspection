@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
+  Future<void> _logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('saved_username'); // Remove stored username
+    Get.offAllNamed('/login'); // Navigate to login page
+  }
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context); // access current theme
+    final theme = Theme.of(context); // Access current theme
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.background, // respects dark/light mode
+      backgroundColor: theme.colorScheme.background,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Header
             Padding(
-              padding:
-              const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -29,7 +36,7 @@ class HomeView extends StatelessWidget {
                         'लघु जल संसाधन विभाग',
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: Colors.red, // stays red by design
+                          color: Colors.red,
                         ),
                       ),
                       Text(
@@ -41,6 +48,25 @@ class HomeView extends StatelessWidget {
                 ],
               ),
             ),
+
+            const Spacer(),
+
+            // Centered Logout Button
+            Center(
+              child: ElevatedButton.icon(
+                onPressed: _logout,
+                icon: const Icon(Icons.logout),
+                label: const Text("Logout"
+                ),
+                style: ElevatedButton.styleFrom(
+                  
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  backgroundColor: const Color.fromRGBO(255, 0, 0, 1),
+                ),
+              ),
+            ),
+
+            const Spacer(),
           ],
         ),
       ),
