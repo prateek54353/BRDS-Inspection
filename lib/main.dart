@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:async';
+import 'dart:io';
 import 'app/routes/app_pages.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -15,15 +17,14 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Login App',
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.system, //  system setting
-      theme: ThemeData.light(),     // Light theme
-      darkTheme: ThemeData.dark(),  //  Dark theme
+      themeMode: ThemeMode.system,
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
       home: const SplashScreen(),
       getPages: AppPages.routes,
     );
   }
 }
-
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -32,28 +33,95 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> with WidgetsBindingObserver {
+  bool _isCheckingInternet = false;
+  bool _hasCheckedInternet = false;
+
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3), () {
-      Get.offNamed('/login');
+    WidgetsBinding.instance.addObserver(this);
+    _checkInternetAndNavigate();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  void _checkInternetAndNavigate() async {
+    if (_isCheckingInternet) return;
+    
+    setState(() {
+      _isCheckingInternet = true;
     });
+
+    try {
+      final result = await InternetAddress.lookup('example.com').timeout(
+        const Duration(seconds: 5),
+        onTimeout: () => throw TimeoutException('Connection timed out'),
+      );
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        await Future.delayed(const Duration(seconds: 1));
+        if (mounted) {
+          Get.offNamed('/login');
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        Get.defaultDialog(
+          title: 'No Internet Connection',
+          content: const Text(
+            'Please check your internet connection and try again.',
+            textAlign: TextAlign.center,
+          ),
+          textConfirm: 'Retry',
+          onConfirm: () {
+            Get.back();
+            _checkInternetAndNavigate();
+          },
+          barrierDismissible: false,
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isCheckingInternet = false;
+          _hasCheckedInternet = true;
+        });
+      }
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && !_hasCheckedInternet) {
+      _checkInternetAndNavigate();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Header
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset('assets/newlogo.jpeg', width: 60),
+                  Image.asset(
+                    'assets/newlogo.jpeg',
+                    width: 60,
+                    fit: BoxFit.cover,
+                    cacheWidth: 60,
+                    cacheHeight: 60,
+                  ),
                   const SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,38 +139,52 @@ class _SplashScreenState extends State<SplashScreen> {
                       ),
                     ],
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-
-                  )
                 ],
               ),
             ),
-            const SizedBox(height: 120),
 
             const SizedBox(height: 200),
+
+            // Loading Section
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: const [
                 Text('Loading...', style: TextStyle(color: Colors.grey)),
                 SizedBox(width: 10),
                 CircularProgressIndicator(color: Colors.orange),
               ],
             ),
+
             const Spacer(),
+
+            // Footer logos
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset('assets/govbihar.png', width: 80),
-                  const SizedBox(width: 20),
-                  Image.asset('assets/niclogo.jpg', width: 200),
+                children: const [
+                  Text('Loading...', style: TextStyle(color: Colors.grey)),
+                  SizedBox(width: 10),
+                  CircularProgressIndicator(color: Colors.orange),
                 ],
               ),
-            )
-          ],
+
+              const Spacer(),
+
+              // Footer logos
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/govbihar.png', width: 80),
+                    const SizedBox(width: 20),
+                    Image.asset('assets/niclogo.jpg', width: 200),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

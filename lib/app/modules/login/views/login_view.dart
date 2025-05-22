@@ -1,34 +1,36 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/login_controller.dart';
+import 'package:myapp1/app/routes/app_pages.dart';
 
 class LoginView extends GetView<LoginController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+        child: SingleChildScrollView(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 400), // Optional: Limit width for better readability
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // login page Logo
                   Image.asset('assets/newlogo.jpeg', height: 200),
-                //username input
-                const SizedBox(height:200),
+                  //username input
+                  const SizedBox(height: 20),
                   TextFormField(
-                  controller:controller.usernameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Username',
-                    prefixIcon: Icon(Icons.person),
-                    border: OutlineInputBorder(),
+                    controller: controller.usernameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Username',
+                      prefixIcon: Icon(Icons.person),
+                      border: OutlineInputBorder(),
+                    ),
                   ),
-                ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 8),
 
                   // Password input
                   TextField(
@@ -36,9 +38,48 @@ class LoginView extends GetView<LoginController> {
                     obscureText: true,
                     decoration: const InputDecoration(
                       labelText: "Enter-Password",
+                      prefixIcon: Icon(Icons.password),
                       border: OutlineInputBorder(),
                     ),
                   ),
+                  const SizedBox(height: 8),
+
+                  // captcha box
+                  Obx(() => Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(0, 0, 0, 1),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          controller.generatedCaptcha.value,
+                          style: const TextStyle(
+                            color: Colors.yellow,
+                            fontSize: 24,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          controller.generateCaptcha();
+                        },
+                        icon: const Icon(Icons.refresh, color: Colors.amber, size: 30),
+                      ),
+                      Expanded(
+                        child: TextField(
+                          controller: controller.captchaController,
+                          decoration: InputDecoration(
+                            hintText: 'Enter Captcha',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )),
 
                   const SizedBox(height: 16),
                   Obx(() => CheckboxListTile(
@@ -50,29 +91,46 @@ class LoginView extends GetView<LoginController> {
                     },
                   )),
 
-
-                  // add captcha later
-                  const SizedBox(height: 16),
-
                   // Forgot Password
                   Align(
                     alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: const Text("Forgot Password"),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Get.toNamed(Routes.FORGOT_PASSWORD);
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromRGBO(65, 101, 149, 1),
+                          foregroundColor: Colors.white, // Added this line
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                          textStyle: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold)),
+                      child: const Text('Forgot Password'),
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 16), // Added a SizedBox for spacing before the login button
 
                   // Login button
-                  ElevatedButton(
-                    onPressed: controller.login,
+                  Obx(() => ElevatedButton(
+                    onPressed: controller.isFormFilled.value && !controller.isLoading.value
+                        ? controller.login
+                        : null,
                     style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 48),
+                      backgroundColor: const Color.fromRGBO(65, 101, 149, 1),
+                      foregroundColor: Colors.white, // Added this line
+                      padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 5),
+
+                      textStyle: const TextStyle(
+                        // color property removed from here
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    child: const Text("LOGIN"),
-                  ),
+                    child: controller.isLoading.value
+                        ? const CircularProgressIndicator()
+                        : const Text('LOGIN'),
+                  )),
                 ],
               ),
             ),
