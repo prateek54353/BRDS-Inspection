@@ -8,130 +8,141 @@ class LoginView extends GetView<LoginController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Center(
+        child: Center(
+          child: SingleChildScrollView(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 400), // Optional: Limit width for better readability
+              constraints: BoxConstraints(
+                maxWidth: 400,
+                minHeight: MediaQuery.of(context).size.height,
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // login page Logo
-                  Image.asset('assets/newlogo.jpeg', height: 200),
-                  //username input
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: controller.usernameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Username',
-                      prefixIcon: Icon(Icons.person),
-                      border: OutlineInputBorder(),
+                  children: [
+                    // Logo
+                    Image.asset(
+                      'assets/newlogo.jpeg',
+                      height: MediaQuery.of(context).size.height * 0.22, // Responsive image height
+                      fit: BoxFit.contain,
                     ),
-                  ),
 
-                  const SizedBox(height: 8),
-
-                  // Password input
-                  TextField(
-                    controller: controller.passwordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: "Enter-Password",
-                      prefixIcon: Icon(Icons.password),
-                      border: OutlineInputBorder(),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: controller.usernameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Username',
+                        prefixIcon: Icon(Icons.person),
+                        border: OutlineInputBorder(),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
 
-                  // captcha box
-                  Obx(() => Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: const Color.fromRGBO(0, 0, 0, 1),
-                          borderRadius: BorderRadius.circular(4),
+                    const SizedBox(height: 8),
+
+                    // Password input
+                    TextField(
+                      controller: controller.passwordController,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        labelText: "Enter Password",
+                        prefixIcon: Icon(Icons.password),
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    // Captcha Box
+                    Obx(() => Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            controller.generatedCaptcha.value,
+                            style: const TextStyle(
+                              color: Colors.yellow,
+                              fontSize: 24,
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                        child: Text(
-                          controller.generatedCaptcha.value,
-                          style: const TextStyle(
-                            color: Colors.yellow,
-                            fontSize: 24,
-                            fontStyle: FontStyle.italic,
+                        IconButton(
+                          onPressed: controller.generateCaptcha,
+                          icon: const Icon(Icons.refresh, color: Colors.amber, size: 30),
+                        ),
+                        Flexible(
+                          child: TextField(
+                            controller: controller.captchaController,
+                            decoration: InputDecoration(
+                              hintText: 'Enter Captcha',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
+
+                    const SizedBox(height: 16),
+
+                    // Remember Me checkbox
+                    Obx(() => CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: const Text('Remember Me'),
+                      value: controller.rememberMe.value,
+                      onChanged: (value) {
+                        controller.rememberMe.value = value!;
+                      },
+                    )),
+
+                    // Forgot Password
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Get.toNamed(Routes.FORGOT_PASSWORD);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromRGBO(65, 101, 149, 1),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                          textStyle: const TextStyle(
+                            fontSize: 10,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        child: const Text('Forgot Password'),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          controller.generateCaptcha();
-                        },
-                        icon: const Icon(Icons.refresh, color: Colors.amber, size: 30),
-                      ),
-                      Expanded(
-                        child: TextField(
-                          controller: controller.captchaController,
-                          decoration: InputDecoration(
-                            hintText: 'Enter Captcha',
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Login Button
+                    Obx(() => ElevatedButton(
+                      onPressed: controller.isFormFilled.value && !controller.isLoading.value
+                          ? controller.login
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromRGBO(65, 101, 149, 1),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 5),
+                        textStyle: const TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ],
-                  )),
-
-                  const SizedBox(height: 16),
-                  Obx(() => CheckboxListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: const Text('Remember Me'),
-                    value: controller.rememberMe.value,
-                    onChanged: (value) {
-                      controller.rememberMe.value = value!;
-                    },
-                  )),
-
-                  // Forgot Password
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Get.toNamed(Routes.FORGOT_PASSWORD);
-                      },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromRGBO(65, 101, 149, 1),
-                          foregroundColor: Colors.white, // Added this line
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                          textStyle: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold)),
-                      child: const Text('Forgot Password'),
-                    ),
-                  ),
-
-                  const SizedBox(height: 16), // Added a SizedBox for spacing before the login button
-
-                  // Login button
-                  Obx(() => ElevatedButton(
-                    onPressed: controller.isFormFilled.value && !controller.isLoading.value
-                        ? controller.login
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(65, 101, 149, 1),
-                      foregroundColor: Colors.white, // Added this line
-                      padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 5),
-
-                      textStyle: const TextStyle(
-                        // color property removed from here
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    child: controller.isLoading.value
-                        ? const CircularProgressIndicator()
-                        : const Text('LOGIN'),
-                  )),
-                ],
+                      child: controller.isLoading.value
+                          ? const CircularProgressIndicator()
+                          : const Text('LOGIN'),
+                    )),
+                  ],
+                ),
               ),
             ),
           ),
