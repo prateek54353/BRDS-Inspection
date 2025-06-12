@@ -1,16 +1,16 @@
 import 'package:get/get.dart';
+import 'package:flutter/material.dart'; // Import for TextEditingController
 
 class ChangePasswordController extends GetxController {
-  final currentPassword = ''.obs;
-  final newPassword = ''.obs;
-  final confirmPassword = ''.obs;
+  final TextEditingController oldPasswordController = TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
-  void updatePassword() {
-    // TODO: Implement password update logic
-    Get.snackbar(
-      'Success',
-      'Password updated successfully',
-      snackPosition: SnackPosition.BOTTOM,
-    );
+  @override
+  void onClose() {
+    oldPasswordController.dispose();
+    newPasswordController.dispose();
+    confirmPasswordController.dispose();
+    super.onClose();
   }
 }

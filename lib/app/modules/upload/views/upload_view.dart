@@ -31,7 +31,6 @@ class UploadView extends GetView<UploadController> {
 class AppFooter extends StatelessWidget {
   const AppFooter({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,7 +39,7 @@ class AppFooter extends StatelessWidget {
       child: const Center(
         child: Text(
           'Services provided by: NIC Bihar',
-          style: TextStyle(color: Colors.white, fontSize: 13),
+          style: TextStyle(color: Colors.white, fontSize: 15),
         ),
       ),
     );

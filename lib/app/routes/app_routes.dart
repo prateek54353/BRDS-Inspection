@@ -12,6 +12,8 @@ abstract class Routes {
   static const VIEW_REPORT = _Paths.VIEW_REPORT;
   static const DASHBOARD = _Paths.DASHBOARD;
   static const INSPECTION_FORM = _Paths.INSPECTION_FORM;
+  static const FORGOTPASS = _Paths.FORGOTPASS;
+  static const OTHERDISTRICT = _Paths.OTHERDISTRICT;
 }
 
 abstract class _Paths {
@@ -25,4 +27,6 @@ abstract class _Paths {
   static const VIEW_REPORT = '/view-report';
   static const DASHBOARD = '/dashboard';
   static const INSPECTION_FORM = '/inspection-form';
+  static const FORGOTPASS = '/forgotpass';
+  static const OTHERDISTRICT = '/otherdistrict';
 }

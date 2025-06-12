@@ -46,12 +46,21 @@ class InspectionFormController extends GetxController {
   
   // Example for managing dropdown selected values
   final Rx<String?> selectedSite = Rx<String?>(null);
-  final Rx<String?> selectedVanposhakPaymentStatus = Rx<String?>(null);
+  final Rx<String?> selectedMonth = Rx<String?>(null); // New: For Month dropdown
+  final Rx<String?> selectedYear = Rx<String?>(null); // New: For Year dropdown
+
+  // Location related state
+  final RxBool isLocationCaptured = false.obs;
+  final RxString capturedLocationCoordinates = ''.obs;
 
   // To ensure we only calculate if both fields have valid numbers
   final RxBool canCalculateSurvivalRate = false.obs;
 
   final isLoading = false.obs;
+
+  final Rx<String?> selectedVanposhakPaymentStatus = Rx<String?>(null);
+  final Rx<String?> selectedVanposhakPaymentStatus2 = Rx<String?>(null); // For the second payment dropdown
+  final Rx<String?> selectedType = Rx<String?>(null); // New: For "वृक्षारोपण का प्रकार" dropdown
 
   @override
   void onInit() {
@@ -99,8 +108,9 @@ class InspectionFormController extends GetxController {
     print("Form Data:");
     print("Site Selection: ${selectedSite.value}");
     print("Planted Saplings: ${plantedSaplingsController.text}");
-    print("Survived Saplings: ${survivedSaplingsController.text}");
+    print("Average Plant Height: ${averagePlantHeightController.text}");
     print("Remarks: ${remarksController.text}");
+    print("Location Coordinates: ${capturedLocationCoordinates.value}");
     // ... print other values
     await Future.delayed(const Duration(seconds: 1));
     isLoading.value = false;
@@ -110,12 +120,29 @@ class InspectionFormController extends GetxController {
   }
 
   void takeLocation() {
-    // Placeholder for location capture logic
-    // This would typically involve using a package like location or geolocator
-    // and updating some Rx variables to store latitude/longitude
-    Get.closeCurrentSnackbar(); // Dismiss existing snackbar
-    Get.snackbar("Location", "Take Location button pressed (not implemented)", snackPosition: SnackPosition.BOTTOM);
-    print("Take Location pressed");
+    Get.dialog(
+      AlertDialog(
+        title: const Text('लोकेशन कैप्चर'),
+        content: const Text('लोकेशन ली जा रही है... कृपया प्रतीक्षा करें।\n(यह एक प्लेसहोल्डर है)'), // Location is being taken... please wait. (This is a placeholder)
+        actions: <Widget>[
+          TextButton(
+            child: const Text('ठीक है'), // OK
+            onPressed: () {
+              Get.back(); // Close the dialog
+              // Simulate location capture
+              capturedLocationCoordinates.value = 'अक्षांश: 25.5941, देशांतर: 85.1376 (प्लेसहोल्डर)'; // Latitude: 25.5941, Longitude: 85.1376 (Placeholder)
+              isLocationCaptured.value = true;
+              Get.snackbar(
+                'लोकेशन', 
+                'लोकेशन सफलतापूर्वक ले ली गई है।\n${capturedLocationCoordinates.value}', 
+                snackPosition: SnackPosition.BOTTOM
+              );
+            },
+          ),
+        ],
+      ),
+      barrierDismissible: false, // User must tap button!
+    );
   }
 
   @override

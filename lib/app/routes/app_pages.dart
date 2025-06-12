@@ -1,22 +1,27 @@
 import 'package:get/get.dart';
-import '../modules/splash/bindings/splash_binding.dart';
-import '../modules/splash/views/splash_view.dart';
-import '../modules/login/bindings/login_binding.dart';
-import '../modules/login/views/login_view.dart';
-import '../modules/home/bindings/home_binding.dart';
-import '../modules/home/views/home_view.dart';
+
 import '../modules/change_password/bindings/change_password_binding.dart';
 import '../modules/change_password/views/change_password_view.dart';
+import '../modules/dashboard/bindings/dashboard_binding.dart';
+import '../modules/dashboard/views/dashboard_view.dart';
+import '../modules/forgotpass/bindings/forgotpass_binding.dart';
+import '../modules/forgotpass/views/forgotpass_view.dart';
+import '../modules/home/bindings/home_binding.dart';
+import '../modules/home/views/home_view.dart';
+import '../modules/inspection_form/bindings/inspection_form_binding.dart';
+import '../modules/inspection_form/views/inspection_form_view.dart';
+import '../modules/login/bindings/login_binding.dart';
+import '../modules/login/views/login_view.dart';
+import '../modules/otherdistrict/bindings/otherdistrict_binding.dart';
+import '../modules/otherdistrict/views/otherdistrict_view.dart';
 import '../modules/report/bindings/report_binding.dart';
 import '../modules/report/views/report_view.dart';
+import '../modules/splash/bindings/splash_binding.dart';
+import '../modules/splash/views/splash_view.dart';
 import '../modules/upload/bindings/upload_binding.dart';
 import '../modules/upload/views/upload_view.dart';
 import '../modules/view_report/bindings/view_report_binding.dart';
 import '../modules/view_report/views/view_report_view.dart';
-import '../modules/dashboard/bindings/dashboard_binding.dart';
-import '../modules/dashboard/views/dashboard_view.dart';
-import '../modules/inspection_form/bindings/inspection_form_binding.dart';
-import '../modules/inspection_form/views/inspection_form_view.dart';
 
 part 'app_routes.dart';
 
@@ -68,8 +73,18 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.INSPECTION_FORM,
-      page: () => const InspectionFormView(),
+      page: () => InspectionFormView(),
       binding: InspectionFormBinding(),
+    ),
+    GetPage(
+      name: _Paths.FORGOTPASS,
+      page: () => const ForgotpassView(),
+      binding: ForgotpassBinding(),
+    ),
+    GetPage(
+      name: _Paths.OTHERDISTRICT,
+      page: () => const OtherdistrictView(),
+      binding: OtherdistrictBinding(),
     ),
   ];
 }

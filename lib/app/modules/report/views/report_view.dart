@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import '../controllers/report_controller.dart';
 import '../../../widgets/app_header.dart';
 import '../../../routes/app_pages.dart'; // Corrected: Import app_pages.dart which includes app_routes.dart as a part
-// Import the data model from the inspection form controller
 import '../../inspection_form/controllers/inspection_form_controller.dart' show ReportListItemData;
 
 class ReportView extends GetView<ReportController> {
@@ -115,7 +114,7 @@ class ReportView extends GetView<ReportController> {
                             },
                             child: Card(
                               margin: const EdgeInsets.symmetric(vertical: 6.0),
-                              // color: Theme.of(context).colorScheme.surfaceVariant, // Using default card color
+                              color: const Color(0xFFE8F5E9), // Light green background for the card
                               elevation: 2,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(4),
@@ -161,14 +160,17 @@ class ReportView extends GetView<ReportController> {
             width: 110,
             child: Text(
               '$label:',
-              style: theme.textTheme.labelLarge?.copyWith(color: theme.textTheme.bodySmall?.color?.withAlpha((255 * 0.7).round())),
+              style: theme.textTheme.labelLarge?.copyWith(color: Colors.grey[700]), // Darker grey for label for better readability on light green
             ),
           ),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               value,
-              style: theme.textTheme.bodyMedium?.copyWith(fontWeight: isWorkName ? FontWeight.w500 : FontWeight.normal),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: isWorkName ? FontWeight.w500 : FontWeight.normal,
+                color: Colors.black87, // Black/dark gray for value text
+              ),
             ),
           ),
         ],

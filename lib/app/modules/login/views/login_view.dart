@@ -1,142 +1,224 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/login_controller.dart';
+import '../../../routes/app_pages.dart';
 
 class LoginView extends GetView<LoginController> {
+  const LoginView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
-          child: Center(
-            child: SingleChildScrollView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: 400,
-                  minHeight: MediaQuery.of(context).size.height,
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height * 0.35, // Responsive height
+              decoration: const BoxDecoration(
+                color: Color(0xFFE8F5E9), // Light green background for the top section
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(50),
+                  bottomRight: Radius.circular(50),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Logo
-                      Image.asset(
-                        'assets/newlogo.jpeg',
-                        height: MediaQuery.of(context).size.height * 0.22, // Responsive image height
-                        fit: BoxFit.contain,
+              ),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.4, // Responsive width
+                      height: MediaQuery.of(context).size.width * 0.4, // Responsive height (square)
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color(0xFFD0F0C0), // Slightly darker green circle
                       ),
-
-                      const SizedBox(height: 20),
-                      RepaintBoundary(
-                        child: TextFormField(
-                          controller: controller.usernameController,
-                          decoration: const InputDecoration(
-                            labelText: 'Username',
-                            prefixIcon: Icon(Icons.person),
-                            border: OutlineInputBorder(),
-                          ),
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/newlogo.jpeg',
+                          fit: BoxFit.cover,
                         ),
                       ),
-
-                      const SizedBox(height: 8),
-
-                      // Password input
-                      RepaintBoundary(
-                        child: TextField(
-                          controller: controller.passwordController,
-                          obscureText: true,
-                          decoration: const InputDecoration(
-                            labelText: "Enter Password",
-                            prefixIcon: Icon(Icons.password),
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      // Captcha Box
-                      Obx(() => Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Text(
-                              controller.generatedCaptcha.value,
-                              style: const TextStyle(
-                                color: Colors.yellow,
-                                fontSize: 24,
-                                fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: controller.generateCaptcha,
-                            icon: const Icon(Icons.refresh, color: Colors.amber, size: 30),
-                          ),
-                          Flexible(
-                            child: TextField(
-                              controller: controller.captchaController,
-                              decoration: InputDecoration(
-                                hintText: 'Enter Captcha',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )),
-
-                      const SizedBox(height: 16),
-
-                      // Remember Me checkbox
-                      Obx(() => CheckboxListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: const Text('Remember Me'),
-                        value: controller.rememberMe.value,
-                        onChanged: (value) {
-                          controller.rememberMe.value = value!;
-                        },
-                      )),
-                      // Login Button
-                      Obx(() => ElevatedButton(
-                            onPressed: (controller.isFormFilled.value && !controller.isLoading.value) 
-                                ? () => controller.login() // Call the login method
-                                : null, // Disable button if form not filled or loading
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: (controller.isFormFilled.value && !controller.isLoading.value)
-                                  ? const Color.fromRGBO(65, 101, 149, 1) // Active color
-                                  : Colors.grey, // Disabled color
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 5),
-                              textStyle: const TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            child: controller.isLoading.value
-                                ? const SizedBox(
-                                    height: 24,
-                                    width: 24,
-                                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                                : const Text('LOGIN'),
-                          )),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20),
+                  Text(
+                    'Welcome Back',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: const Color(0xFF388E3C), // Green text color
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Please sign in to continue',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: Colors.grey[600],
+                        ),
+                  ),
+                  const SizedBox(height: 30),
+                  TextField(
+                    controller: controller.usernameController,
+                    decoration: InputDecoration(
+                      labelText: 'Username',
+                      prefixIcon: const Icon(Icons.person),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.grey[300]!),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Color(0xFF388E3C), width: 2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Obx(
+                    () => TextField(
+                      controller: controller.passwordController,
+                      obscureText: !controller.isPasswordVisible,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        prefixIcon: const Icon(Icons.lock),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Colors.grey[300]!),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFF388E3C), width: 2),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            controller.isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Colors.grey,
+                          ),
+                          onPressed: controller.togglePasswordVisibility,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Security Check',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Obx(() => Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFCE4EC), // Light pink background
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.pink[100]!),
+                              ),
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  controller.generatedCaptcha,
+                                  style: Theme.of(context).textTheme.headlineSmall?.copyWith( // Adjusted font size
+                                        color: Colors.pink[700],
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      IconButton(
+                        icon: Icon(Icons.refresh, color: Colors.grey[600]),
+                        onPressed: controller.generateCaptcha,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        flex: 2,
+                        child: TextField(
+                          controller: controller.captchaController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: 'Enter Captcha',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: Colors.grey[300]!),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(color: Color(0xFF388E3C), width: 2),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        Get.toNamed(Routes.FORGOTPASS);
+                      },
+                      child: Text(
+                        'Forgot Password?',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  Obx(
+                    () => SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF8BC34A), // Light green button
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 5,
+                        ),
+                        onPressed: controller.isLoading ? null : controller.login,
+                        child: controller.isLoading
+                            ? const CircularProgressIndicator(color: Colors.white)
+                            : const Text(
+                                'Login',
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
