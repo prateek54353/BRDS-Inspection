@@ -52,7 +52,7 @@ class LoginView extends GetView<LoginController> {
                 children: [
                   const SizedBox(height: 20),
                   Text(
-                    'Welcome Back',
+                    'Welcome ',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           color: const Color(0xFF388E3C), // Green text color
                           fontWeight: FontWeight.bold,
